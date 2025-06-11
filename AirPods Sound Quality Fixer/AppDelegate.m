@@ -52,7 +52,7 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
         [prefs synchronize];
     }
     
-    forcedInputID = readenId;
+    forcedInputID = (AudioDeviceID)readenId;
     
     NSLog(@"Loaded device from UserDefaults: %d", forcedInputID);
 
@@ -119,12 +119,21 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
         [prefs synchronize];
         NSLog(@"Saved device from UserDefaults: %d", forcedInputID);
 
+        AudioObjectPropertyAddress theAddress = {
+            .mSelector = kAudioHardwarePropertyDefaultInputDevice,
+            .mScope = kAudioObjectPropertyScopeGlobal,
+            .mElement = kAudioObjectPropertyElementMaster
+        };
+
         UInt32 propertySize = sizeof(UInt32);
-        AudioHardwareSetProperty(
-            kAudioHardwarePropertyDefaultInputDevice ,
-            propertySize ,
-            &forcedInputID );
-        
+        AudioObjectSetPropertyData(
+            kAudioObjectSystemObject,
+            &theAddress,
+            0,
+            NULL,
+            propertySize,
+            &forcedInputID);
+
         // show forcing
 
         [ menu
@@ -163,24 +172,31 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
     
     UInt32 propertySize;
     
-    AudioDeviceID dev_array[64];
+    AudioDeviceID *dev_array = NULL;
     int numberOfDevices = 0;
-    char deviceName[256];
-    
-    AudioHardwareGetPropertyInfo(
-        kAudioHardwarePropertyDevices,
-        &propertySize,
-        NULL );
-    
-    AudioHardwareGetProperty(
-        kAudioHardwarePropertyDevices,
+    char *deviceName = NULL;
+
+    AudioObjectPropertyAddress theAddress = {
+        .mSelector = kAudioHardwarePropertyDevices,
+        .mScope = kAudioObjectPropertyScopeGlobal,
+        .mElement = kAudioObjectPropertyElementMaster
+    };
+
+    AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &theAddress, 0, NULL, &propertySize);
+
+    numberOfDevices = propertySize / (UInt32)sizeof(AudioDeviceID);
+    dev_array = malloc(propertySize);
+
+    AudioObjectGetPropertyData(
+        kAudioObjectSystemObject,
+        &theAddress,
+        0,
+        NULL,
         &propertySize,
         dev_array);
-    
-    numberOfDevices = ( propertySize / sizeof( AudioDeviceID ) );
-    
+
     NSLog( @"devices found : %i" , numberOfDevices );
-    
+
     if ( forcedInputID < UINT32_MAX )
     {
     
@@ -204,6 +220,7 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
         
     }
 
+    theAddress.mScope = kAudioDevicePropertyScopeInput;
 
     for( int index = 0 ;
              index < numberOfDevices ;
@@ -213,14 +230,15 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
         AudioDeviceID oneDeviceID = dev_array[ index ];
 
         propertySize = 256;
-        
-        AudioDeviceGetPropertyInfo(
-            oneDeviceID ,
-            0 ,
-            true ,
-            kAudioDevicePropertyStreams ,
-            &propertySize ,
-            NULL );
+
+        theAddress.mSelector = kAudioDevicePropertyStreams;
+
+        AudioObjectGetPropertyDataSize(
+            oneDeviceID,
+            &theAddress,
+            0,
+            NULL,
+            &propertySize);
 
         // if there are any input streams, then it is an input
 
@@ -229,15 +247,27 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
         
             // get name
 
-            propertySize = 256;
-            
-            AudioDeviceGetProperty(
-                oneDeviceID ,
-                0 ,
-                false ,
-                kAudioDevicePropertyDeviceName ,
-                &propertySize ,
-                deviceName );
+            theAddress.mSelector = kAudioDevicePropertyDeviceName;
+
+            AudioObjectGetPropertyDataSize(
+                oneDeviceID,
+                &theAddress,
+                0,
+                NULL,
+                &propertySize);
+            if(propertySize <= 0)
+                continue;
+
+            deviceName = realloc(deviceName, propertySize + 1);
+            deviceName[propertySize] = '\0';
+
+            AudioObjectGetPropertyData(
+                oneDeviceID,
+                &theAddress,
+                0,
+                NULL,
+                &propertySize,
+                deviceName);
 
             NSLog( @"found input device : %s  %u\n" , deviceName , (unsigned int)oneDeviceID );
             
@@ -273,6 +303,9 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
 
     }
 
+    free(deviceName);
+    free(dev_array);
+
     // get current input device
     
     AudioDeviceID deviceID = kAudioDeviceUnknown;
@@ -281,12 +314,27 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
     // if it is not the built in, change
     
     propertySize = sizeof( deviceID );
-    
-    AudioHardwareGetProperty(
-        kAudioHardwarePropertyDefaultInputDevice,
+
+    theAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    theAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
+
+    AudioObjectGetPropertyDataSize(
+        kAudioObjectSystemObject,
+        &theAddress,
+        0,
+        NULL,
+        &propertySize);
+
+    if( propertySize != sizeof( deviceID) ) return;
+
+    AudioObjectGetPropertyData(
+        kAudioObjectSystemObject,
+        &theAddress,
+        0,
+        NULL,
         &propertySize,
         &deviceID);
-    
+
     NSLog( @"default input device is %u" , deviceID );
     
     if ( !paused && deviceID != forcedInputID )
@@ -294,12 +342,15 @@ OSStatus callbackFunction(  AudioObjectID inObjectID,
 
         NSLog( @"forcing input device for default : %u" , forcedInputID );
 
-        UInt32 propertySize = sizeof(UInt32);
-        AudioHardwareSetProperty(
-            kAudioHardwarePropertyDefaultInputDevice ,
-            propertySize ,
-            &forcedInputID );
-        
+        UInt32 propertySize = sizeof(forcedInputID);
+        AudioObjectSetPropertyData(
+            kAudioObjectSystemObject,
+            &theAddress,
+            0,
+            NULL,
+            propertySize,
+            &forcedInputID);
+
         // show forcing
 
         [ menu
