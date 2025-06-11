@@ -7,4 +7,6 @@ If you have more input devices you can select which device you want to force ove
 
 The app runs in the menu bar.
 
-Download the compiled application from [releases](https://github.com/milgra/airpodssoundqualityfixer/releases/tag/1.0)
+Coincidentally also works for all bidirectional capable Bluetooth devices as well.
+
+Download the compiled application from [releases](https://github.com/kode54/airpodssoundqualityfixer/releases/tag/1.0)
