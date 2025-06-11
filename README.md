@@ -9,4 +9,4 @@ The app runs in the menu bar.
 
 Coincidentally also works for all bidirectional capable Bluetooth devices as well.
 
-Download the compiled application from [releases](https://github.com/kode54/airpodssoundqualityfixer/releases/tag/1.0)
+Download the compiled and notarized application from [releases](https://github.com/kode54/airpodssoundqualityfixer/releases/tag/1.0), works on macOS 10.13 and up.
