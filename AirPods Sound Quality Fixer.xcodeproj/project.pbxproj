@@ -16,6 +16,7 @@
 		335B96772199C07000F6D77B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 335B96742199C07000F6D77B /* LICENSE */; };
 		335B96782199C07000F6D77B /* GBLaunchAtLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 335B96752199C07000F6D77B /* GBLaunchAtLogin.m */; };
 		335B96792199C07000F6D77B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 335B96762199C07000F6D77B /* README.md */; };
+		836A47BF2DF9A66800A7913E /* airpodscase.icon in Resources */ = {isa = PBXBuildFile; fileRef = 836A47BE2DF9A66800A7913E /* airpodscase.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		335B96762199C07000F6D77B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		335B967A2199C25A00F6D77B /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		335B967B2199C25A00F6D77B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		836A47BE2DF9A66800A7913E /* airpodscase.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = airpodscase.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		3333F8A4219874D300816A9F /* AirPods Sound Quality Fixer */ = {
 			isa = PBXGroup;
 			children = (
+				836A47BE2DF9A66800A7913E /* airpodscase.icon */,
 				335B966F21988E6700F6D77B /* airpods-icon.png */,
 				335B966E21988E6700F6D77B /* airpods-icon@2x.png */,
 				3333F8A5219874D300816A9F /* AppDelegate.h */,
@@ -171,6 +174,7 @@
 				3333F8AC219874D600816A9F /* MainMenu.xib in Resources */,
 				335B967121988E6700F6D77B /* airpods-icon.png in Resources */,
 				335B96772199C07000F6D77B /* LICENSE in Resources */,
+				836A47BF2DF9A66800A7913E /* airpodscase.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,7 +331,7 @@
 		3333F8B4219874D600816A9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = airpodscase;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -337,7 +341,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				PRODUCT_BUNDLE_IDENTIFIER = com.milgra.asqf;
+				PRODUCT_BUNDLE_IDENTIFIER = co.losno.asqf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -345,7 +349,7 @@
 		3333F8B5219874D600816A9F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = airpodscase;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -355,7 +359,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				PRODUCT_BUNDLE_IDENTIFIER = com.milgra.asqf;
+				PRODUCT_BUNDLE_IDENTIFIER = co.losno.asqf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
